@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+:root {
+  --graphite: #10161d;
+  --graphite-2: #18212b;
+  --paper: #eef1f4;
+  --surface: #ffffff;
+  --steel: #5a6573;
+  --line: #d5dbe2;
+  --b24: #2e6bff;
+  --b24-ink: #1f55d6;
+  --onec: #f5b400;
+  --onec-ink: #7a5800;
+  --low: #14a06c;
+  --low-ink: #0b7a51;
+}
+
+@theme inline {
+  --color-graphite: var(--graphite);
+  --color-graphite-2: var(--graphite-2);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-steel: var(--steel);
+  --color-line: var(--line);
+  --color-b24: var(--b24);
+  --color-b24-ink: var(--b24-ink);
+  --color-onec: var(--onec);
+  --color-onec-ink: var(--onec-ink);
+  --color-low: var(--low);
+  --color-low-ink: var(--low-ink);
+  --font-sans: var(--font-onest);
+  --font-mono: var(--font-jetbrains);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--paper);
+  color: var(--graphite);
+}
+
+:focus-visible {
+  outline: 2px solid var(--b24);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.blueprint {
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%);
+}
+
+.grid-paper {
+  background-image:
+    linear-gradient(rgb(16 22 29 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(16 22 29 / 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
