@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <article className="mx-auto max-w-3xl px-4 pt-36 pb-24 sm:px-6">
-      <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">Политика конфиденциальности</h1>
-      <div className="mt-10 grid gap-6 text-[17px] leading-relaxed text-steel [&_h2]:mt-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-graphite">
+      <h1 className="text-4xl font-semibold tracking-tight hyphens-auto sm:text-5xl">Политика конфиденциальности</h1>
+      <div className="mt-10 grid gap-6 text-[17px] leading-relaxed text-muted [&_h2]:mt-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-fg">
         <p>
           Оператор персональных данных — {site.legalName} (ИНН {site.inn}), адрес: {site.address}. Политика действует в
           отношении данных, которые вы оставляете на этом сайте.
@@ -34,7 +34,7 @@ export default function PrivacyPage() {
         <h2>Ваши права</h2>
         <p>
           Вы можете запросить сведения о своих данных, их исправление или удаление и отозвать согласие, написав на{" "}
-          <a href={`mailto:${site.email}`} className="text-b24-ink underline">{site.email}</a>.
+          <a href={`mailto:${site.email}`} className="text-b24 underline">{site.email}</a>.
         </p>
       </div>
     </article>

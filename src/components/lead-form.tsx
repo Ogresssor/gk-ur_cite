@@ -10,7 +10,6 @@ type Props = {
   source: "contact" | "quiz" | "service";
   quiz?: string;
   submitLabel?: string;
-  tone?: "light" | "dark";
   withComment?: boolean;
 };
 
@@ -20,7 +19,6 @@ export function LeadForm({
   source,
   quiz,
   submitLabel = "Получить консультацию",
-  tone = "light",
   withComment = true,
 }: Props) {
   const [state, action, pending] = useActionState(submitLead, initial);
@@ -40,23 +38,19 @@ export function LeadForm({
     formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
   }, [state]);
 
-  const dark = tone === "dark";
   const errors = state.status === "error" ? (state.fieldErrors ?? {}) : {};
   // React сбрасывает форму после отправки: возвращаем введённое, чтобы не набирать заново.
   const values = state.status === "error" ? (state.values ?? {}) : {};
-  const field = `w-full rounded-lg border px-4 py-3 text-base outline-none transition-colors ${
-    dark
-      ? "border-white/15 bg-white/5 text-white placeholder:text-white/45 focus:border-b24"
-      : "border-line bg-surface text-graphite placeholder:text-steel/80 focus:border-b24-ink"
-  }`;
-  const label = `mb-1.5 block text-sm font-medium ${dark ? "text-white/85" : "text-graphite"}`;
-  const errorText = `mt-1 text-sm ${dark ? "text-red-300" : "text-red-700"}`;
+  const field =
+    "w-full rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3.5 text-base text-fg outline-none transition-colors placeholder:text-white/40 hover:border-white/25 focus:border-b24 focus:bg-white/[0.06]";
+  const label = "mb-1.5 block text-sm font-medium text-fg/85";
+  const errorText = "mt-1 text-sm text-red-300";
 
   if (state.status === "success") {
     return (
       <div
         role="status"
-        className={`flex items-start gap-3 rounded-xl border p-5 ${dark ? "border-low/40 bg-low/10 text-white" : "border-low/40 bg-low/10 text-graphite"}`}
+        className="flex items-start gap-3 rounded-xl border border-low/40 bg-low/10 p-5 text-fg"
       >
         <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-low" aria-hidden="true" />
         <p>{state.message}</p>
@@ -125,9 +119,7 @@ export function LeadForm({
           ].map(([value, text]) => (
             <label
               key={value}
-              className={`cursor-pointer rounded-full border px-4 py-2 text-sm transition-colors has-[:checked]:border-b24 has-[:checked]:bg-b24 has-[:checked]:text-white has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-b24 ${
-                dark ? "border-white/20 text-white/85" : "border-line bg-surface text-graphite"
-              }`}
+              className="cursor-pointer rounded-full border border-white/20 px-4 py-2 text-sm text-fg/85 transition-colors has-[:checked]:border-b24 has-[:checked]:bg-b24 has-[:checked]:text-white has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-b24"
             >
               <input
                 type="radio"
@@ -145,7 +137,7 @@ export function LeadForm({
       {withComment ? (
         <div>
           <label htmlFor={`${uid}-comment`} className={label}>
-            Задача <span className={dark ? "text-white/60" : "text-steel"}>(необязательно)</span>
+            Задача <span className="text-muted">(необязательно)</span>
           </label>
           <textarea
             id={`${uid}-comment`}
@@ -163,7 +155,7 @@ export function LeadForm({
       ) : null}
 
       <div>
-        <label className={`flex items-start gap-3 text-sm ${dark ? "text-white/75" : "text-steel"}`}>
+        <label className="flex items-start gap-3 text-sm text-muted">
           <input
             type="checkbox"
             name="consent"
@@ -185,7 +177,7 @@ export function LeadForm({
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex items-center justify-center gap-2 rounded-lg bg-onec px-6 py-3.5 text-base font-semibold text-graphite transition-transform hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-70"
+        className="inline-flex items-center justify-center gap-2 rounded-xl bg-onec px-6 py-4 text-base font-semibold text-bg shadow-[0_10px_40px_-10px_rgb(245_180_0/0.6)] transition-transform hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-70"
       >
         {pending ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : null}
         {pending ? "Отправляем…" : submitLabel}

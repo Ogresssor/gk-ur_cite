@@ -2,9 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check } from "lucide-react";
+import { CaseCard } from "@/components/cards";
+import { CtaBand } from "@/components/cta-band";
 import { FaqList } from "@/components/faq-list";
-import { LeadForm } from "@/components/lead-form";
-import { cases, faq } from "@/content/proof";
+import { Magnetic } from "@/components/magnetic";
+import { PageHero } from "@/components/page-hero";
+import { Photo } from "@/components/photo";
+import { ProcessTimeline } from "@/components/process-timeline";
+import { Reveal } from "@/components/reveal";
+import { SectionHead } from "@/components/section-head";
+import { SpotlightCard } from "@/components/spotlight-card";
+import { cases } from "@/content/proof";
 import { directionMeta, getService, services } from "@/content/services";
 
 export function generateStaticParams() {
@@ -33,100 +41,150 @@ export default async function ServicePage({ params }: PageProps<"/uslugi/[slug]"
 
   return (
     <>
-      <section className="relative overflow-hidden bg-graphite pt-32 pb-20 text-white sm:pt-40">
-        <div className="blueprint absolute inset-0" aria-hidden="true" />
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-          <nav aria-label="Хлебные крошки" className="font-mono text-xs text-white/60">
-            <Link href="/" className="hover:text-white">Главная</Link> / <Link href="/#services" className="hover:text-white">Услуги</Link> /{" "}
-            <span className="text-white/85">{service.title}</span>
-          </nav>
-          <span className="mt-8 block h-1 w-16" style={{ background: meta.color }} aria-hidden="true" />
-          <h1 className="mt-6 max-w-4xl text-5xl font-semibold tracking-tight text-balance sm:text-7xl">{service.title}</h1>
-          <p className="mt-6 max-w-2xl text-lg text-white/75 sm:text-xl">{service.lead}</p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <Link href="#order" className="rounded-xl bg-onec px-7 py-4 text-center font-semibold text-graphite transition-transform hover:-translate-y-0.5">
+      <PageHero
+        crumbs={[{ href: "/", label: "Главная" }, { href: "/uslugi", label: "Услуги" }, { label: service.title }]}
+        title={service.title}
+        lead={service.lead}
+        color={meta.color}
+      >
+        <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+          <Magnetic>
+            <Link href="#contact" className="w-full rounded-2xl bg-onec px-8 py-4 text-center font-semibold text-bg sm:w-auto">
               Обсудить задачу
             </Link>
-            <Link href="/#calculator" className="rounded-xl border border-white/20 bg-white/5 px-7 py-4 text-center font-semibold hover:bg-white/10">
+          </Magnetic>
+          <Magnetic>
+            <Link href="/kalkulyator" className="glass w-full rounded-2xl px-8 py-4 text-center font-semibold sm:w-auto">
               Рассчитать стоимость
             </Link>
+          </Magnetic>
+        </div>
+      </PageHero>
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <Reveal className="group overflow-hidden rounded-3xl border border-line">
+          <Photo {...service.cover} sizes="100vw" priority className="aspect-[16/9] sm:aspect-[21/9]" />
+        </Reveal>
+      </div>
+
+      <section aria-labelledby="items-title" className="py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <SectionHead id="items-title" eyebrow="Что делаем" title="Работы и цены" />
+          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {service.items.map((item, i) => (
+              <Reveal as="li" key={item.title} delay={(i % 3) * 0.06}>
+                <SpotlightCard className="flex h-full flex-col rounded-3xl border border-line bg-card p-7">
+                  <span className="h-1 w-10 rounded-full" style={{ background: meta.color }} aria-hidden="true" />
+                  <h3 className="mt-6 text-xl font-semibold tracking-tight">{item.title}</h3>
+                  <p className="mt-2 text-muted">{item.text}</p>
+                  <p className="mt-auto pt-6 font-mono">{item.price}</p>
+                </SpotlightCard>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section aria-labelledby="packages-title" className="relative py-24 sm:py-32">
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{ background: `radial-gradient(50% 40% at 50% 10%, ${meta.color}, transparent)` }}
+          aria-hidden="true"
+        />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
+          <SectionHead id="packages-title" eyebrow="Пакеты" title="Готовые решения с фиксированной ценой" />
+          <ul className="mt-12 grid gap-5 lg:grid-cols-3">
+            {service.packages.map((p, i) => (
+              <Reveal as="li" key={p.name} delay={i * 0.08}>
+                <div
+                  className={`relative flex h-full flex-col rounded-3xl p-7 sm:p-8 ${p.featured ? "border-2 border-onec bg-card shadow-[0_30px_80px_-30px_rgb(245_180_0/0.45)]" : "glass"}`}
+                >
+                  {p.featured ? (
+                    <span className="absolute -top-3 left-7 rounded-full bg-onec px-3 py-1 text-xs font-semibold text-bg">Выбирают чаще</span>
+                  ) : null}
+                  <h3 className="text-2xl font-semibold">{p.name}</h3>
+                  <p className="mt-1 text-sm text-muted">{p.forWhom}</p>
+                  <p className="mt-6 text-4xl font-semibold tracking-tight">{p.price}</p>
+                  <p className="mt-1 font-mono text-xs text-muted">срок: {p.term}</p>
+                  <ul className="mt-6 grid gap-3 border-t border-line pt-6">
+                    {p.includes.map((inc) => (
+                      <li key={inc} className="flex gap-3">
+                        <Check className={`mt-0.5 size-5 shrink-0 ${meta.ink}`} aria-hidden="true" />
+                        {inc}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href="#contact"
+                    className={`mt-8 rounded-2xl px-6 py-3.5 text-center font-semibold ${p.featured ? "bg-onec text-bg" : "bg-white/10 hover:bg-white/15"}`}
+                  >
+                    Выбрать «{p.name}»
+                  </Link>
+                </div>
+              </Reveal>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section aria-labelledby="steps-title" className="py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <SectionHead id="steps-title" eyebrow="Этапы" title="Как проходит проект" />
+          <div className="mt-16">
+            <ProcessTimeline steps={service.steps} />
           </div>
         </div>
       </section>
 
-      <section aria-labelledby="price-title" className="py-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <h2 id="price-title" className="text-4xl font-semibold tracking-tight sm:text-5xl">Что входит и сколько стоит</h2>
-          <ul className="mt-12 grid gap-4 md:grid-cols-2">
-            {service.items.map((item) => (
-              <li key={item.title} className="flex flex-col rounded-2xl border border-line bg-surface p-6 sm:p-8">
-                <h3 className="text-xl font-semibold tracking-tight">{item.title}</h3>
-                <p className="mt-2 text-steel">{item.text}</p>
-                <p className="mt-auto pt-6 font-mono">{item.price}</p>
-              </li>
+      <section aria-labelledby="gallery-title" className="py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <SectionHead id="gallery-title" eyebrow="Работы" title="Как это выглядит" />
+          <ul className="mt-12 grid auto-rows-[220px] gap-4 sm:grid-cols-2 lg:auto-rows-[260px] lg:grid-cols-3">
+            {service.gallery.map((g, i) => (
+              <Reveal as="li" key={g.src} delay={i * 0.06} className={`group overflow-hidden rounded-3xl border border-line ${i === 0 ? "sm:col-span-2 sm:row-span-2" : ""} ${i === 3 ? "sm:col-span-2 lg:col-span-3" : ""}`}>
+                <Photo {...g} sizes="(min-width: 1024px) 33vw, 100vw" className="h-full" />
+              </Reveal>
             ))}
           </ul>
-
-          <div className="mt-16 rounded-2xl bg-surface p-6 sm:p-10">
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">Что изменится после внедрения</h2>
-            <ul className="mt-6 grid gap-4 md:grid-cols-3">
+          <Reveal className="glass mt-12 rounded-3xl p-7 sm:p-10">
+            <h3 className="text-2xl font-semibold tracking-tight sm:text-3xl">Что изменится после внедрения</h3>
+            <ul className="mt-6 grid gap-5 md:grid-cols-3">
               {service.outcomes.map((o) => (
-                <li key={o} className="flex gap-3">
+                <li key={o} className="flex gap-3 text-lg">
                   <Check className={`mt-1 size-5 shrink-0 ${meta.ink}`} aria-hidden="true" />
-                  <span>{o}</span>
+                  {o}
                 </li>
               ))}
             </ul>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       {related.length > 0 ? (
-        <section aria-labelledby="related-title" className="border-t border-line py-24">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <h2 id="related-title" className="text-4xl font-semibold tracking-tight sm:text-5xl">Похожие проекты</h2>
-            <ul className="mt-12 grid gap-4 md:grid-cols-2">
-              {related.map((c) => (
-                <li key={c.id} className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
-                  <h3 className="text-xl font-semibold tracking-tight">{c.client}</h3>
-                  <p className="mt-2 text-steel">{c.solution}</p>
-                  <p className="mt-6 flex flex-wrap gap-x-8 gap-y-2">
-                    {c.metrics.map((m) => (
-                      <span key={m.label}>
-                        <span className="block text-2xl font-semibold tabular-nums">{m.value}</span>
-                        <span className="text-sm text-steel">{m.label}</span>
-                      </span>
-                    ))}
-                  </p>
-                </li>
+        <section aria-labelledby="related-title" className="py-24 sm:py-32">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+            <SectionHead id="related-title" eyebrow="Кейсы" title="Похожие проекты" />
+            <div className="mt-12 grid gap-5 md:grid-cols-2">
+              {related.slice(0, 2).map((c, i) => (
+                <Reveal key={c.id} delay={i * 0.08}>
+                  <CaseCard item={c} />
+                </Reveal>
               ))}
-            </ul>
+            </div>
           </div>
         </section>
       ) : null}
 
-      <section aria-labelledby="faq-title" className="border-t border-line py-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <h2 id="faq-title" className="mb-10 text-4xl font-semibold tracking-tight sm:text-5xl">Вопросы</h2>
-          <FaqList items={faq.slice(0, 4)} />
+      <section aria-labelledby="faq-title" className="py-24 sm:py-32">
+        <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_1.6fr]">
+          <SectionHead id="faq-title" eyebrow="Вопросы" title={`Вопросы про ${service.title}`} />
+          <Reveal>
+            <FaqList items={service.faq} />
+          </Reveal>
         </div>
       </section>
 
-      <section id="order" aria-labelledby="order-title" className="bg-graphite py-24 text-white">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2">
-          <div>
-            <h2 id="order-title" className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-              Обсудим ваш проект: {service.title}
-            </h2>
-            <p className="mt-4 max-w-md text-lg text-white/75">
-              Перезвоним за 15 минут в рабочее время, проведём бесплатный аудит и пришлём смету.
-            </p>
-          </div>
-          <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8">
-            <LeadForm source="service" tone="dark" submitLabel="Заказать бесплатный аудит" />
-          </div>
-        </div>
-      </section>
+      <CtaBand title={`Обсудим ваш проект: ${service.title}`} source="service" submitLabel="Заказать бесплатный аудит" />
     </>
   );
 }

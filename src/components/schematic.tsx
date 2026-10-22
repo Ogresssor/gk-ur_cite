@@ -55,8 +55,11 @@ const nodes: NodeDef[] = [
 const SAMPLES = 120;
 const SPEED = 70; // единиц viewBox в секунду
 
-export function HeroSchematic() {
-  const [active, setActive] = useState(nodes[4]);
+// Схема управляется снаружи (activeId из скролл-истории) или сама перебирает сценарии.
+export function Schematic({ activeId, compact = false }: { activeId?: string; compact?: boolean }) {
+  const [own, setActive] = useState(nodes[4]);
+  const controlled = activeId ? nodes.find((n) => n.id === activeId) : undefined;
+  const active = controlled ?? own;
   const [pinned, setPinned] = useState(false);
   const [paused, setPaused] = useState(false);
   const elapsed = useRef(0.6);
@@ -66,12 +69,12 @@ export function HeroSchematic() {
 
   // Пока человек не трогает схему, она сама перебирает сценарии.
   useEffect(() => {
-    if (pinned || paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (controlled || pinned || paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const id = window.setInterval(() => {
       setActive((cur) => nodes[(nodes.indexOf(cur) + 1) % nodes.length]);
     }, 4200);
     return () => window.clearInterval(id);
-  }, [pinned, paused]);
+  }, [controlled, pinned, paused]);
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -144,6 +147,15 @@ export function HeroSchematic() {
 
   return (
     <div ref={rootRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setPaused((v) => !v)}
+        aria-pressed={paused}
+        aria-label="Пауза анимации схемы"
+        className="absolute top-0 right-0 z-10 rounded-md border border-white/15 bg-bg/70 p-1.5 text-white/80 hover:bg-white/10"
+      >
+        {paused ? <Play className="size-3.5" aria-hidden="true" /> : <Pause className="size-3.5" aria-hidden="true" />}
+      </button>
       <div className="relative mx-auto aspect-[640/440] w-full">
         <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 h-full w-full" aria-hidden="true">
           {edges.map((e) => (
@@ -201,7 +213,7 @@ export function HeroSchematic() {
                 setPinned(true);
               }}
               aria-pressed={isActive}
-              className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-md border bg-graphite px-2 py-1 font-mono text-[10px] whitespace-nowrap text-white transition-transform duration-300 hover:scale-105 sm:px-3 sm:py-1.5 sm:text-xs"
+              className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-md border bg-bg px-2 py-1 font-mono text-[10px] whitespace-nowrap text-white transition-transform duration-300 hover:scale-105 sm:px-3 sm:py-1.5 sm:text-xs"
               style={{
                 left: `${(n.x / W) * 100}%`,
                 top: `${(n.y / H) * 100}%`,
@@ -221,7 +233,7 @@ export function HeroSchematic() {
         })}
       </div>
 
-      <div className="mt-4 flex min-h-[4.5rem] flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+      <div className={`mt-4 min-h-[4.5rem] flex-col gap-3 ${compact ? "hidden lg:flex" : "flex"} rounded-xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between`}>
         <p className="text-sm text-white/85 sm:text-base" aria-hidden="true">
           <span className="font-mono text-xs uppercase" style={{ color: toneColor[active.tone] }}>
             {active.label}
@@ -235,15 +247,6 @@ export function HeroSchematic() {
             <li className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-onec" />1С</li>
             <li className="flex items-center gap-1.5"><span className="h-0.5 w-4 bg-low" />Слаботочка</li>
           </ul>
-          <button
-            type="button"
-            onClick={() => setPaused((v) => !v)}
-            aria-pressed={paused}
-            aria-label="Пауза анимации схемы"
-            className="rounded-md border border-white/15 p-1.5 text-white/80 hover:bg-white/10"
-          >
-            {paused ? <Play className="size-3.5" aria-hidden="true" /> : <Pause className="size-3.5" aria-hidden="true" />}
-          </button>
         </div>
       </div>
     </div>

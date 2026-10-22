@@ -1,7 +1,7 @@
-// Все контактные данные и реквизиты — заглушки. Замените на реальные перед запуском.
+// Контакты, реквизиты и цифры — заглушки. Замените на реальные перед запуском.
 export const site = {
-  name: "ГК ЮР",
-  legalName: "ООО «ГК ЮР»",
+  name: "ГК УР",
+  legalName: "ООО «ГК УР»",
   inn: "0000000000",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.ru",
   city: "Москва",
@@ -15,18 +15,37 @@ export const site = {
 } as const;
 
 export const nav = [
-  { href: "/#services", label: "Услуги" },
-  { href: "/#calculator", label: "Калькулятор" },
-  { href: "/#cases", label: "Кейсы" },
-  { href: "/#reviews", label: "Отзывы" },
-  { href: "/#faq", label: "Вопросы" },
-  { href: "/#contact", label: "Контакты" },
+  { href: "/uslugi", label: "Услуги" },
+  { href: "/kejsy", label: "Кейсы" },
+  { href: "/kalkulyator", label: "Калькулятор" },
+  { href: "/o-kompanii", label: "О компании" },
+  { href: "/kontakty", label: "Контакты" },
 ] as const;
 
-// Цифры для блока доверия. Подставьте реальные значения компании.
+// Цифры для блоков доверия: число анимируется счётчиком. Подставьте реальные значения.
 export const facts = [
-  { value: "12 лет", label: "внедряем и монтируем" },
-  { value: "340+", label: "проектов сдано" },
-  { value: "15 мин", label: "реакция по SLA на аварию" },
-  { value: "1 договор", label: "на ИТ и слаботочку" },
+  { value: 12, suffix: " лет", label: "внедряем и монтируем" },
+  { value: 340, suffix: "+", label: "проектов сдано" },
+  { value: 15, suffix: " мин", label: "реакция на аварию по SLA" },
+  { value: 98, suffix: "%", label: "клиентов продлевают сопровождение" },
+] as const;
+
+// Платформы и оборудование, с которыми работаем (без заявлений о партнёрских статусах).
+export const stack = [
+  "Битрикс24",
+  "1С:Предприятие",
+  "1С:УТ",
+  "1С:ЗУП",
+  "1С:Бухгалтерия",
+  "Hikvision",
+  "Dahua",
+  "Trassir",
+  "Ubiquiti",
+  "MikroTik",
+  "Cisco",
+  "Asterisk",
+  "Mango Office",
+  "PERCo",
+  "ZKTeco",
+  "Sigur",
 ] as const;

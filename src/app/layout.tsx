@@ -3,6 +3,7 @@ import { JetBrains_Mono, Onest } from "next/font/google";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { MobileBar } from "@/components/mobile-bar";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { site } from "@/content/site";
 import "./globals.css";
 
@@ -30,13 +31,15 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#10161d",
+  themeColor: "#0a0e13",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ru" className={`${onest.variable} ${mono.variable} antialiased`}>
-      <body className="min-h-full font-sans">
+      <body className="min-h-full overflow-x-clip font-sans">
+        <SmoothScroll />
+        <div className="bg-noise fixed inset-0 z-[60]" aria-hidden="true" />
         <Header />
         <main id="main">{children}</main>
         <Footer />
