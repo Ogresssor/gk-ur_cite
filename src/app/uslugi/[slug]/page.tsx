@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check } from "lucide-react";
@@ -31,7 +32,16 @@ export async function generateMetadata({ params }: PageProps<"/uslugi/[slug]">):
   };
 }
 
-export default async function ServicePage({ params }: PageProps<"/uslugi/[slug]">) {
+// params читаем внутри <Suspense>: так Next отдаёт статичную оболочку и для адресов вне generateStaticParams
+export default function ServicePage({ params }: PageProps<"/uslugi/[slug]">) {
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <ServiceContent params={params} />
+    </Suspense>
+  );
+}
+
+async function ServiceContent({ params }: Pick<PageProps<"/uslugi/[slug]">, "params">) {
   const { slug } = await params;
   const service = getService(slug);
   if (!service) notFound();
@@ -49,9 +59,9 @@ export default async function ServicePage({ params }: PageProps<"/uslugi/[slug]"
       >
         <div className="mt-10 flex flex-col gap-3 sm:flex-row">
           <Magnetic>
-            <Link href="#contact" className="w-full rounded-2xl bg-onec px-8 py-4 text-center font-semibold text-bg sm:w-auto">
+            <a href="#contact" className="w-full rounded-2xl bg-onec px-8 py-4 text-center font-semibold text-bg sm:w-auto">
               Обсудить задачу
-            </Link>
+            </a>
           </Magnetic>
           <Magnetic>
             <Link href="/kalkulyator" className="glass w-full rounded-2xl px-8 py-4 text-center font-semibold sm:w-auto">
@@ -114,12 +124,12 @@ export default async function ServicePage({ params }: PageProps<"/uslugi/[slug]"
                       </li>
                     ))}
                   </ul>
-                  <Link
+                  <a
                     href="#contact"
                     className={`mt-8 rounded-2xl px-6 py-3.5 text-center font-semibold ${p.featured ? "bg-onec text-bg" : "bg-white/10 hover:bg-white/15"}`}
                   >
                     Выбрать «{p.name}»
-                  </Link>
+                  </a>
                 </div>
               </Reveal>
             ))}

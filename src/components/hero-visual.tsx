@@ -51,17 +51,19 @@ export function HeroVisual() {
         {/* Затемнение под текстом, чтобы заголовок читался поверх сцены */}
         <div className="absolute inset-0 bg-linear-to-r from-bg via-bg/70 to-transparent max-lg:bg-linear-to-b max-lg:via-bg/50" />
       </div>
-      {enabled ? (
-        <button
-          type="button"
-          onClick={() => setPaused((v) => !v)}
-          aria-pressed={paused}
-          aria-label="Пауза анимации сферы"
-          className="absolute top-24 right-4 z-10 rounded-full border border-white/15 bg-bg/60 p-2 text-white/70 backdrop-blur hover:text-white sm:right-6 md:top-auto md:bottom-36"
-        >
-          {paused ? <Play className="size-4" aria-hidden="true" /> : <Pause className="size-4" aria-hidden="true" />}
-        </button>
-      ) : null}
+      <button
+        type="button"
+        onClick={() => {
+          const next = !paused;
+          setPaused(next);
+          window.dispatchEvent(new CustomEvent("hero-pause", { detail: next }));
+        }}
+        aria-pressed={paused}
+        aria-label="Пауза анимаций первого экрана"
+        className="absolute top-24 right-4 z-10 rounded-full border border-white/15 bg-bg/60 p-2 text-white/70 backdrop-blur hover:text-white sm:right-6 md:top-auto md:bottom-36"
+      >
+        {paused ? <Play className="size-4" aria-hidden="true" /> : <Pause className="size-4" aria-hidden="true" />}
+      </button>
     </>
   );
 }

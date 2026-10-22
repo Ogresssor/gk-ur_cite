@@ -6,13 +6,21 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 // Слово в заголовке сменяется по кругу; для скринридеров — полный список сразу.
 export function WordRotator({ words, interval = 2400 }: { words: readonly string[]; interval?: number }) {
   const [i, setI] = useState(0);
+  const [paused, setPaused] = useState(false);
   const reduce = useReducedMotion();
 
+  // Общая кнопка паузы в hero останавливает и сферу, и смену слов
   useEffect(() => {
-    if (reduce) return;
+    const onPause = (e: Event) => setPaused((e as CustomEvent<boolean>).detail);
+    window.addEventListener("hero-pause", onPause);
+    return () => window.removeEventListener("hero-pause", onPause);
+  }, []);
+
+  useEffect(() => {
+    if (reduce || paused) return;
     const id = window.setInterval(() => setI((v) => (v + 1) % words.length), interval);
     return () => window.clearInterval(id);
-  }, [reduce, words.length, interval]);
+  }, [reduce, paused, words.length, interval]);
 
   return (
     <span className="relative inline-grid align-bottom">

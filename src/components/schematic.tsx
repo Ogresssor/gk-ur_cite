@@ -196,36 +196,46 @@ export function Schematic({ activeId, compact = false }: { activeId?: string; co
 
         {nodes.map((n) => {
           const isActive = n.id === active.id;
+          const style = {
+            left: `${(n.x / W) * 100}%`,
+            top: `${(n.y / H) * 100}%`,
+            borderColor: toneColor[n.tone],
+            boxShadow: isActive ? `0 0 0 3px ${toneColor[n.tone]}55, 0 0 24px ${toneColor[n.tone]}66` : "none",
+          };
+          const dot = (
+            <span
+              className="mr-1.5 inline-block size-1.5 rounded-full align-middle"
+              style={{ background: toneColor[n.tone] }}
+              aria-hidden="true"
+            />
+          );
+          const base =
+            "absolute -translate-x-1/2 -translate-y-1/2 rounded-md border bg-bg px-2 py-1 font-mono text-[10px] whitespace-nowrap text-white transition-transform duration-300 sm:px-3 sm:py-1.5 sm:text-xs";
+          // Когда схемой управляет скролл-история, узлы — просто подписи, без фокуса
+          if (controlled) {
+            return (
+              <span key={n.id} className={base} style={style} aria-hidden="true">
+                {dot}
+                {n.label}
+              </span>
+            );
+          }
+          const pick = () => {
+            setActive(n);
+            setPinned(true);
+          };
           return (
             <button
               key={n.id}
               type="button"
-              onMouseEnter={() => {
-                setActive(n);
-                setPinned(true);
-              }}
-              onFocus={() => {
-                setActive(n);
-                setPinned(true);
-              }}
-              onClick={() => {
-                setActive(n);
-                setPinned(true);
-              }}
+              onMouseEnter={pick}
+              onFocus={pick}
+              onClick={pick}
               aria-pressed={isActive}
-              className="absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-md border bg-bg px-2 py-1 font-mono text-[10px] whitespace-nowrap text-white transition-transform duration-300 hover:scale-105 sm:px-3 sm:py-1.5 sm:text-xs"
-              style={{
-                left: `${(n.x / W) * 100}%`,
-                top: `${(n.y / H) * 100}%`,
-                borderColor: toneColor[n.tone],
-                boxShadow: isActive ? `0 0 0 3px ${toneColor[n.tone]}55, 0 0 24px ${toneColor[n.tone]}66` : "none",
-              }}
+              className={`${base} cursor-pointer hover:scale-105`}
+              style={style}
             >
-              <span
-                className="mr-1.5 inline-block size-1.5 rounded-full align-middle"
-                style={{ background: toneColor[n.tone] }}
-                aria-hidden="true"
-              />
+              {dot}
               {n.label}
               <span className="sr-only">. {n.scenario}</span>
             </button>

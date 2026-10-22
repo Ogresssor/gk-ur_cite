@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Quote } from "lucide-react";
@@ -25,7 +26,16 @@ export async function generateMetadata({ params }: PageProps<"/kejsy/[slug]">): 
   };
 }
 
-export default async function CasePage({ params }: PageProps<"/kejsy/[slug]">) {
+// params читаем внутри <Suspense>: так Next отдаёт статичную оболочку и для адресов вне generateStaticParams
+export default function CasePage({ params }: PageProps<"/kejsy/[slug]">) {
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <CaseContent params={params} />
+    </Suspense>
+  );
+}
+
+async function CaseContent({ params }: Pick<PageProps<"/kejsy/[slug]">, "params">) {
   const { slug } = await params;
   const item = getCase(slug);
   if (!item) notFound();

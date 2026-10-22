@@ -176,6 +176,8 @@ export default function HeroScene({ onReady, paused = false }: { onReady?: () =>
       camera.position.z = narrow ? 10.5 : 8;
       group.position.set(narrow ? 0.6 : 0.3, narrow ? -2.6 : 0, 0);
       camera.updateProjectionMatrix();
+      // setSize очищает canvas: перерисовываем кадр, иначе на паузе сфера пропадёт
+      renderer.render(scene, camera);
     };
     resize();
     const ro = new ResizeObserver(resize);

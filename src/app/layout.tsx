@@ -3,6 +3,7 @@ import { JetBrains_Mono, Onest } from "next/font/google";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { MobileBar } from "@/components/mobile-bar";
+import { MotionProvider } from "@/components/motion-provider";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { site } from "@/content/site";
 import "./globals.css";
@@ -40,10 +41,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full overflow-x-clip font-sans">
         <SmoothScroll />
         <div className="bg-noise fixed inset-0 z-[60]" aria-hidden="true" />
-        <Header />
-        <main id="main">{children}</main>
-        <Footer />
-        <MobileBar />
+        <MotionProvider>
+          <Header />
+          <main id="main">{children}</main>
+          <Footer />
+          <MobileBar />
+        </MotionProvider>
       </body>
     </html>
   );

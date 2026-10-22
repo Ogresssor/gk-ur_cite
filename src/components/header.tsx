@@ -17,6 +17,8 @@ export function Header() {
   const [hidden, setHidden] = useState(false);
   const pathname = usePathname();
   const megaRef = useRef<HTMLLIElement>(null);
+  const megaButtonRef = useRef<HTMLButtonElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const { scrollY } = useScroll();
 
   // Шапка прячется при скролле вниз и возвращается при скролле вверх.
@@ -37,6 +39,9 @@ export function Header() {
     if (!open && !mega) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        // Возвращаем фокус на кнопку, которая открыла меню, а не теряем его на <body>
+        if (mega) megaButtonRef.current?.focus();
+        if (open) menuButtonRef.current?.focus();
         setOpen(false);
         setMega(false);
       }
@@ -46,11 +51,18 @@ export function Header() {
     };
     document.addEventListener("keydown", onKey);
     document.addEventListener("click", onClick);
-    if (open) document.body.style.overflow = "hidden";
+    // Lenis скроллит программно, поэтому кроме overflow останавливаем и его
+    if (open) {
+      document.body.style.overflow = "hidden";
+      window.dispatchEvent(new Event("lenis-stop"));
+    }
     return () => {
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("click", onClick);
-      document.body.style.overflow = "";
+      if (open) {
+        document.body.style.overflow = "";
+        window.dispatchEvent(new Event("lenis-start"));
+      }
     };
   }, [open, mega]);
 
@@ -72,8 +84,16 @@ export function Header() {
         <Logo />
         <nav aria-label="Основное меню" className="hidden lg:block">
           <ul className="flex items-center gap-1 text-sm text-fg/80">
-            <li ref={megaRef} className="relative">
+            <li
+              ref={megaRef}
+              className="relative"
+              onBlur={(e) => {
+                // Фокус ушёл Tab'ом за пределы меню — закрываем
+                if (mega && !e.currentTarget.contains(e.relatedTarget as Node | null)) setMega(false);
+              }}
+            >
               <button
+                ref={megaButtonRef}
                 type="button"
                 aria-expanded={mega}
                 aria-controls="mega-menu"
@@ -139,6 +159,7 @@ export function Header() {
             Рассчитать цену
           </Link>
           <button
+            ref={menuButtonRef}
             type="button"
             className="rounded-lg p-2 hover:bg-white/10 lg:hidden"
             aria-expanded={open}

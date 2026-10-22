@@ -57,7 +57,7 @@ export function Photo({ src, alt, kind, sizes, priority, className = "", zoom = 
           alt={alt}
           fill
           sizes={sizes}
-          priority={priority}
+          preload={priority}
           className={`object-cover ${zoom ? "transition-transform duration-700 ease-out group-hover:scale-105" : ""}`}
         />
       </div>

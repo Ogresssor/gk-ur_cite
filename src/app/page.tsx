@@ -80,9 +80,9 @@ export default function Home() {
               </Link>
             </Magnetic>
             <Magnetic>
-              <Link href="#contact" className="glass flex w-full items-center justify-center rounded-2xl px-8 py-4.5 text-base font-semibold sm:w-auto">
+              <a href="#contact" className="glass flex w-full items-center justify-center rounded-2xl px-8 py-4.5 text-base font-semibold sm:w-auto">
                 Получить бесплатный аудит
-              </Link>
+              </a>
             </Magnetic>
           </Reveal>
         </div>
